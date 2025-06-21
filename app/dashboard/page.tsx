@@ -2,6 +2,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Pie } from "react-chartjs-2";
+import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
+Chart.register(ArcElement, Tooltip, Legend);
 
 export default function DashboardPage() {
   type SessionType = {
@@ -153,25 +156,6 @@ export default function DashboardPage() {
     setTimeout(() => setGroupMsg(null), 2000);
   };
 
-  // Add/remove member
-  const handleMember = async (groupId: string, memberId: string, action: "add" | "remove") => {
-    setGroupMsg(null);
-    const res = await fetch(`/api/groups/${groupId}/member`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ memberId, action }),
-    });
-    const data = await res.json();
-    if (selectedGroup && data.members) {
-      setSelectedGroup({
-        ...selectedGroup,
-        members: friends.filter(f => data.members.includes(f._id)),
-      });
-      setGroupMsg({ type: "success", text: `Member ${action === "add" ? "added" : "removed"} successfully!` });
-      setTimeout(() => setGroupMsg(null), 2000);
-    }
-  };
-
   return (
     <div className="p-4 md:p-8 bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen text-white">
       <div className="max-w-4xl mx-auto">
@@ -232,127 +216,82 @@ export default function DashboardPage() {
             ))}
           </ul>
         </div>
+
+        <div className="mb-6">
+        <h2 className="text-xl font-semibold mb-2 text-blue-300">Create a Group:</h2>
+        <div className="flex flex-col md:flex-row gap-2 items-center">
+          <input
+            className="text-white p-2 rounded flex-1"
+            placeholder="New group name"
+            value={groupName}
+            onChange={e => setGroupName(e.target.value)}
+          />
+          <select
+            multiple
+            className="text-white p-2 rounded flex-1"
+            value={groupMembers.map(m => m._id)}
+            onChange={e => {
+              const selected = Array.from(e.target.selectedOptions).map(opt => opt.value);
+              setGroupMembers(friends.filter(f => selected.includes(f._id)));
+            }}
+          >
+            {friends.map(f => (
+              <option key={f._id} value={f._id}>
+                {f.username} ({f.email})
+              </option>
+            ))}
+          </select>
+          <button
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold"
+            onClick={handleCreateGroup}
+          >
+            Create Group
+          </button>
+        </div>
+        {groupMsg && (
+          <div
+            className={`mt-2 px-4 py-2 rounded font-semibold ${
+              groupMsg.type === "success"
+                ? "bg-green-700 text-green-100"
+                : "bg-red-700 text-red-100"
+            }`}
+          >
+            {groupMsg.text}
+          </div>
+        )}
+      </div>
         {/* Groups Section */}
         <div className="mb-10">
-          <h2 className="text-xl font-semibold mb-2 text-blue-300">Your Groups:</h2>
-          {/* Group Creation */}
-          <div className="mb-4 flex flex-col md:flex-row gap-2 items-center">
-            <input
-              className="text-white p-2 rounded flex-1"
-              placeholder="New group name"
-              value={groupName}
-              onChange={e => setGroupName(e.target.value)}
-            />
-            <select
-              multiple
-              className="text-white p-2 rounded flex-1"
-              value={groupMembers.map(m => m._id)}
-              onChange={e => {
-                const selected = Array.from(e.target.selectedOptions).map(opt => opt.value);
-                setGroupMembers(friends.filter(f => selected.includes(f._id)));
-              }}
+        <h2 className="text-xl font-semibold mb-2 text-blue-300">Your Groups:</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {groups.length === 0 && <div className="text-gray-400">No groups yet.</div>}
+          {groups.map(group => (
+            <Link
+              key={group._id}
+              href={`/dashboard/groups/${group._id}`}
+              className="block bg-gray-800 hover:bg-blue-900 border border-blue-400 rounded-lg p-4 shadow transition-all"
             >
-              {friends.map(f => (
-                <option key={f._id} value={f._id}>
-                  {f.username} ({f.email})
-                </option>
-              ))}
-            </select>
-            <button
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold"
-              onClick={handleCreateGroup}
-            >
-              Create Group
-            </button>
-          </div>
-          {/* Group Creation/Deletion Feedback */}
-          {groupMsg && (
-            <div
-              className={`mb-4 px-4 py-2 rounded font-semibold ${
-                groupMsg.type === "success"
-                  ? "bg-green-700 text-green-100"
-                  : "bg-red-700 text-red-100"
-              }`}
-            >
-              {groupMsg.text}
-            </div>
-          )}
-          {/* Groups List */}
-          <ul>
-            {groups.length === 0 && <li className="text-gray-400">No groups yet.</li>}
-            {groups.map(group => (
-              <li
-                key={group._id}
-                className={`mb-2 p-3 rounded cursor-pointer transition-all ${
-                  selectedGroup?._id === group._id
-                    ? "bg-blue-900 border-2 border-blue-400"
-                    : "bg-gray-800 hover:bg-gray-700"
-                } flex justify-between items-center`}
-                onClick={() => setSelectedGroup(group)}
-              >
-                <span className="font-bold text-lg">{group.name}</span>
+              <div className="flex justify-between items-center">
+                <span className="font-bold text-lg text-blue-200">{group.name}</span>
                 {group.creator.email === session?.user?.email && (
                   <button
                     className="ml-4 bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-xs font-semibold"
                     onClick={e => {
-                      e.stopPropagation();
+                      e.preventDefault();
                       handleDeleteGroup(group._id);
                     }}
                   >
                     Delete
                   </button>
                 )}
-              </li>
-            ))}
-          </ul>
-        </div>
-        {/* Selected Group Details */}
-        {selectedGroup && (
-          <div className="mt-6 bg-gray-900 p-6 rounded shadow-lg border border-blue-900">
-            <h3 className="text-2xl font-bold mb-4 text-blue-300">Group: {selectedGroup.name}</h3>
-            <div>
-              <strong className="text-blue-200">Members:</strong>
-              <ul className="mt-2">
-                {selectedGroup.members.map(m => (
-                  <li key={m._id} className="flex items-center mb-1">
-                    <span>
-                      {m.username} <span className="text-gray-400">({m.email})</span>
-                    </span>
-                    {selectedGroup.creator.email === session?.user?.email && m._id !== session.user?.email && (
-                      <button
-                        className="ml-2 bg-red-500 hover:bg-red-700 px-2 py-1 rounded text-xs"
-                        onClick={() => handleMember(selectedGroup._id, m._id, "remove")}
-                      >
-                        Remove
-                      </button>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            {selectedGroup.creator.email === session?.user?.email && (
-              <div className="mt-4">
-                <strong className="text-blue-200">Add Member:</strong>
-                <select
-                  className="text-black p-1 rounded ml-2"
-                  onChange={e => {
-                    if (e.target.value) handleMember(selectedGroup._id, e.target.value, "add");
-                  }}
-                  value=""
-                >
-                  <option value="">Select friend</option>
-                  {friends
-                    .filter(f => !selectedGroup.members.some(m => m._id === f._id))
-                    .map(f => (
-                      <option key={f._id} value={f._id}>
-                        {f.username} ({f.email})
-                      </option>
-                    ))}
-                </select>
               </div>
-            )}
-          </div>
-        )}
+              <div className="mt-2 text-sm text-gray-300">
+                Members: {group.members.length}
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
       </div>
     </div>
   );

@@ -12,7 +12,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         {/* Logo */}
         <div className="text-2xl font-bold text-blue-400 tracking-wide">
-          <Link href="/">SplitEase</Link>
+          <Link href="/">BillChop</Link>
         </div>
 
         {/* Links */}
@@ -24,6 +24,12 @@ export default function Navbar() {
                 className="hover:text-blue-400 transition-colors duration-200"
               >
                 Dashboard
+              </Link>
+              <Link
+                href="/profile"
+                className="hover:text-blue-400 transition-colors duration-200"
+              >
+                Profile
               </Link>
               <button
                 onClick={() => signOut()}

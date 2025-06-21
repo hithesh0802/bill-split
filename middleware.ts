@@ -6,7 +6,7 @@ export default withAuth({
   callbacks: {
     authorized: ({ req, token }) => {
       // Publicly accessible routes
-      const publicPaths = ["/", "/login", "/signup"];
+      const publicPaths = ["/", "/login", "/signup", "/forgot-password", "/reset-password"];
       if (publicPaths.includes(req.nextUrl.pathname)) {
         return true;
       }

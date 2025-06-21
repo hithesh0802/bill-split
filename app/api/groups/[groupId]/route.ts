@@ -22,3 +22,17 @@ export async function DELETE(req: NextRequest, { params }: { params: { groupId: 
   await group.deleteOne();
   return NextResponse.json({ success: true });
 }
+
+export async function GET(req: NextRequest, { params }: { params: { groupId: string } }) {
+  await connectDB();
+  const session = await getServerSession(authOptions);
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const group = await Group.findById(params.groupId)
+    .populate("members", "username email _id")
+    .populate("creator", "username email _id")
+    .lean();
+  if (!group) return NextResponse.json({ error: "Group not found" }, { status: 404 });
+
+  return NextResponse.json({ group });
+}
