@@ -7,13 +7,14 @@ import { authOptions } from "@/lib/authOptions";
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { expenseId: string } }
+  context: { params: { expenseId: string } }
 ) {
   await connectDB();
+  const { expenseId } = context.params;
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const expense = await Expense.findById(params.expenseId);
+  const expense = await Expense.findById(expenseId);
   if (!expense) return NextResponse.json({ error: "Expense not found" }, { status: 404 });
 
   // Only the user who added the expense can delete it
