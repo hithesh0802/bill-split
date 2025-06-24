@@ -5,6 +5,10 @@ import { Group } from "@/models/Group";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 
+export async function GET() {
+  return NextResponse.json({ ok: true });
+}
+
 export async function DELETE(
   req: NextRequest,
   { params }: { params: { expenseId: string } }
