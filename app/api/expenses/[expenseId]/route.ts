@@ -7,10 +7,10 @@ import { authOptions } from "@/lib/authOptions";
 
 export async function DELETE(
   req: NextRequest,
-  context: { params: { expenseId: string } }
+  { params }: { params: { expenseId: string } }
 ) {
   await connectDB();
-  const { expenseId } = context.params;
+  const { expenseId } = params;
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
