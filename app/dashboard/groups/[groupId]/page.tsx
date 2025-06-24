@@ -73,7 +73,7 @@ export default function GroupDetailsPage() {
   };
   useEffect(() => {
     fetchExpenses();
-  }, [groupId]);
+  }, [groupId, fetchExpenses]);
 
   // Handle adding expense
   const handleAddExpense = async (e: React.FormEvent) => {

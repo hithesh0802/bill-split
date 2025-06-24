@@ -8,11 +8,11 @@ export default function ForgotPasswordPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMsg(null);
-    const res = await fetch("/api/auth/reset-request", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
-    });
+    // const res = await fetch("/api/auth/reset-request", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({ email }),
+    // });
     setMsg("If your email exists, a reset link has been sent.");
   };
 
