@@ -45,7 +45,7 @@ export default function DashboardPage() {
   const [friends, setFriends] = useState<UserType[]>([]);
   const [groups, setGroups] = useState<GroupType[]>([]);
   const [groupName, setGroupName] = useState("");
-  const [selectedGroup, setSelectedGroup] = useState<GroupType | null>(null);
+  //const [selectedGroup, setSelectedGroup] = useState<GroupType | null>(null);
   const [groupMembers, setGroupMembers] = useState<UserType[]>([]);
   const [groupMsg, setGroupMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const router = useRouter();
@@ -150,7 +150,7 @@ export default function DashboardPage() {
       return;
     }
     setGroups(groups.filter(g => g._id !== groupId));
-    setSelectedGroup(null);
+    //setSelectedGroup(null);
     setGroupMsg({ type: "success", text: "Group deleted successfully!" });
     setTimeout(() => setGroupMsg(null), 2000);
   };
