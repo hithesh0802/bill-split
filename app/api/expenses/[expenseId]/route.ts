@@ -5,7 +5,10 @@ import { Group } from "@/models/Group";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-export async function DELETE(req: NextRequest, { params }: { params: { expenseId: string } }) {
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { expenseId: string } }
+) {
   await connectDB();
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
