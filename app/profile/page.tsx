@@ -23,11 +23,12 @@ export default function ProfilePage() {
       const res = await fetch("/api/profile");
       const data = await res.json();
       setUser(data.user);
+      console.log(user);
       setUsername(data.user?.username || "");
       setEmail(data.user?.email || "");
       setProfilePic(data.user?.profilePic || null);
     })();
-  }, []);
+  }, [user]);
 
   // Handle profile update
   const handleUpdate = async (e: React.FormEvent) => {

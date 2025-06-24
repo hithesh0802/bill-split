@@ -47,6 +47,7 @@ export const authOptions: NextAuthOptions = {
     signIn: "/login",
   },
   callbacks: {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async signIn({ user, account, profile }) {
       // Only handle Google sign-in
       if (account?.provider === "google" && profile?.email) {
@@ -74,7 +75,8 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       // Attach user id to session if available
       if (token && session.user) {
-        session.user.id = token.id as string;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (session.user as any).id = token.id as string;
       }
       return session;
     },
