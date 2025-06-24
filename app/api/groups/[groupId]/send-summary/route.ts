@@ -4,7 +4,7 @@ import { Expense } from "@/models/Expense";
 import { Group } from "@/models/Group";
 import { User } from "@/models/Users";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/authOptions";
 import nodemailer from "nodemailer";
 
 type MemberType = { _id: string; username: string; email: string };

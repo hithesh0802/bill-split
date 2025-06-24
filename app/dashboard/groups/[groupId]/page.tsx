@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Pie } from "react-chartjs-2";
+import { useCallback } from "react";
 import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
 Chart.register(ArcElement, Tooltip, Legend);
 
@@ -66,11 +67,12 @@ export default function GroupDetailsPage() {
   }, [groupId, router]);
 
   // Fetch group's expenses
-  const fetchExpenses = async () => {
+  const fetchExpenses = useCallback(async () => {
     const res = await fetch(`/api/groups/${groupId}/expenses`);
     const data = await res.json();
     setExpenses(data.expenses || []);
-  };
+  }, [groupId]);
+  
   useEffect(() => {
     fetchExpenses();
   }, [groupId, fetchExpenses]);

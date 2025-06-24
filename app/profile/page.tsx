@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
 type UserType = {
   _id: string;
@@ -79,9 +80,11 @@ export default function ProfilePage() {
       )}
       <div className="flex flex-col items-center mb-8">
         <div className="mb-2">
-          <img
+          <Image
             src={profilePic || "/default-profile.jpg"}
             alt="Profile"
+            width={128}
+            height={128}
             className="w-32 h-32 rounded-full object-cover border-4 border-blue-400"
           />
         </div>
