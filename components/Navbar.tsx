@@ -12,7 +12,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         {/* Logo */}
         <div className="text-2xl font-bold text-blue-400 tracking-wide">
-          <Link href="/">BillChop</Link>
+          <Link href="/">SplitEase</Link>
         </div>
 
         {/* Links */}

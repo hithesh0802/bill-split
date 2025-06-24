@@ -61,7 +61,7 @@ export default function LoginPage() {
         <div className="text-right mb-2">
           <a
             href="/forgot-password"
-            className="text-red-400 hover:underline text-sm"
+            className="hover:underline text-sm text-gray-400"
           >
             Forgot Password?
           </a>
@@ -71,6 +71,12 @@ export default function LoginPage() {
           className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50"
         >
           Login
+        </button>
+        <button
+          type="button" className="w-full mt-4 bg-red-500 text-white py-2 rounded hover:bg-red-600"
+          onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+        >
+          Sign in with Google
         </button>
       </form>
     </div>
